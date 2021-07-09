@@ -68,3 +68,57 @@ Dockerfile:
 ```
 CMD /bin/bash ./manager.sh
 ```
+### Ожидание старта сервисов в других контейнерах
+Проверяет порты на доступность
+
+wait_for.sh:
+```
+#!/bin/bash
+#
+# Wait for other containers
+#
+# environment:
+#   - WAIT_FOR=container1:45000 container2:50006
+#
+
+hosts=$WAIT_FOR
+counter=0
+max_wait_sec=30
+
+print()  {
+  echo "[$CONTAINER_NAME]: ********** $1 **********"
+}
+
+print "WAIT_FOR script started"
+
+if [[ $hosts == "" ]]
+then
+  print "No hosts to check"
+  exit
+fi
+
+mapfile -t hosts_array < <(echo "$hosts" | tr " " "\n")
+
+for host_raw in "${hosts_array[@]}"
+do
+  print "Waiting for ${host_raw}"
+  host=$(echo "$host_raw" | tr ":" "/")
+
+  # shellcheck disable=SC2188
+  until < /dev/tcp/"$host"; do
+    (( counter++ ))
+    if [[ $counter -gt $max_wait_sec ]]
+    then
+        echo "DO SOMETHING HERE!"
+    fi
+    print "${host_raw} is unavailable - sleeping ${counter} sec totally"
+    sleep 1
+    done
+done
+print "All containers started-up!"
+```
+
+Dockerfile:
+```
+CMD /bin/bash ./wait_for.sh && /bin/bash something_useful.sh
+```
