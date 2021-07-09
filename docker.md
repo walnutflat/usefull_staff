@@ -78,6 +78,7 @@ wait_for.sh:
 # Wait for other containers
 #
 # environment:
+#   - CONTAINER_NAME=container_name
 #   - WAIT_FOR=container1:45000 container2:50006
 #
 
