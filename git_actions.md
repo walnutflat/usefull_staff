@@ -109,6 +109,6 @@ jobs:
           key_path: id_rsa
           script: |
             cd /home/host_username/docker/
-            docker-compose pull image_name
+            docker-compose pull ${{ env.IMAGE_NAME }}
             docker-compose up -d
 ```
