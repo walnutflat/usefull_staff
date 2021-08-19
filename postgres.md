@@ -1,8 +1,12 @@
 
-* Kill the process
+* Cancell the process
 ```
   SELECT pg_cancel_backend(<pid of the process>)
  ```
+* Terminate the process
+```
+  SELECT pg_terminate_backend(<pid of the process>)
+ ``` 
 * TOP-20 huge tables
 ```
 SELECT nspname || '.' || relname AS "relation",
